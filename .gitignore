@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+*.env.local
+
+# Data
+*.csv
+!data-engineering/ingestion/cities.csv
+*.parquet
+*.json
+!package.json
+data/
+raw_data/
+
+# Spark
+spark-warehouse/
+metastore_db/
+derby.log
+
+# Database
+*.sqlite3
+*.db
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Frontend / React / Vite
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Frontend package files
+!frontend/package.json
+!frontend/package-lock.json

@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Database (each dev/tester generates their own via seed.py)
+*.db
+*.sqlite3
+
+# Environment secrets
+.env
+
+# Editor/OS junk
+.vscode/
+.idea/
+.DS_Store
