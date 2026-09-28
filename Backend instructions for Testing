@@ -1,0 +1,64 @@
+
+1. Setup 
+bash
+cd backend
+python -m venv venv
+source venv/bin/activate      # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+2. Set the two secrets (new step — the ingestion key is new)
+bash
+export JWT_SECRET_KEY="any-long-random-string"
+export INGESTION_API_KEY="any-other-long-random-string"
+
+If skipped, both fall back to placeholder defaults in the code — fine for local testing, but the tester should know these exist.
+
+3. Seed and run 
+bash
+python seed.py
+uvicorn main:app --reload --port 8000
+
+4. Test the previously-existing stuff 
+Public endpoint, no auth:
+
+bash
+curl http://127.0.0.1:8000/api/events
+
+Admin login:
+
+bash
+curl -X POST http://127.0.0.1:8000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "admin", "password": "ChangeMe123!"}'
+
+Admin endpoint with the returned token:
+
+bash
+curl http://127.0.0.1:8000/api/admin/events \
+  -H "Authorization: Bearer PASTE_TOKEN_HERE"
+
+5. Test the new part — ingestion endpoint
+
+Without a key (should return 401):
+
+bash
+curl -X POST http://127.0.0.1:8000/internal/events \
+  -H "Content-Type: application/json" \
+  -d '{"event_type":"Flood","city":"Pune","state":"Maharashtra","latitude":18.5204,"longitude":73.8567,"severity":"High","confidence_score":92,"timestamp":"2026-09-14T10:00:00"}'
+
+With the correct key (should return 201 and the created event):
+
+bash
+curl -X POST http://127.0.0.1:8000/internal/events \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: any-other-long-random-string" \
+  -d '{"event_type":"Flood","city":"Pune","state":"Maharashtra","latitude":18.5204,"longitude":73.8567,"severity":"High","confidence_score":92,"timestamp":"2026-09-14T10:00:00"}'
+
+Then confirm it shows up publicly:
+
+bash
+curl http://127.0.0.1:8000/api/events
+
+Easiest way to test everything at once: 
+just go to http://127.0.0.1:8000/docs after starting the server —
+Swagger UI lists every route including /internal/events, and you can click "Try it out" on each one instead of writing curl commands by hand.
